@@ -82,130 +82,130 @@
 			})
 		});
 		
-			function getExchangeRateArr() {
-				$.ajax({
-					type : "POST",
-					url : "ajax/getExchangeRateArr.do",
-					dataType : "json",
-					data : {},
-					success : function(respon) {
-						exchangeRateArr = respon.data;
+		function getExchangeRateArr() {
+			$.ajax({
+				type : "POST",
+				url : "ajax/getExchangeRateArr.do",
+				dataType : "json",
+				data : {},
+				success : function(respon) {
+					exchangeRateArr = respon.data;
 
-						getCalTgt();
-					}
-					
-				})
-			}
-			
-			function getCalTgt(){
-				sendingCountry = $('#sendingCountry option:selected').val();
-				receivingCountry = $('#receivingCountry option:selected').val();
-				
-				if(sendingCountry == "USD") {
-					
-					for(var idx in exchangeRateArr) {
-						
-						if(exchangeRateArr[idx].country == sendingCountry + receivingCountry) {
-							tgtExRate = numberWithCommaPoint(Math.round(exchangeRateArr[idx].rate *100)/100);
-							
-							$('#tgtRate').html(tgtExRate + " " + receivingCountry + "/" + sendingCountry);
-							$('#sendingCountryUnit').html(" " + sendingCountry);
-							
-							break;
-						}
-					}
-				}
-				else {
-					var sendingCountryExRate;
-					var receivingCountryExRate;
-					
-					for(var idx in exchangeRateArr) {
-						
-						if(exchangeRateArr[idx].country == "USD"+sendingCountry) {
-							sendingCountryExRate = exchangeRateArr[idx].rate;
-							
-							break;
-						}
-					}
-					
-					for(var idx in exchangeRateArr) {
-						
-						if(exchangeRateArr[idx].country == "USD"+receivingCountry) {
-							receivingCountryExRate = exchangeRateArr[idx].rate;
-							
-							break;
-						}
-					}
-					
-					tgtExRate = numberWithCommaPoint(Math.round(receivingCountryExRate/sendingCountryExRate *100)/100);
-					
-					$('#tgtRate').html(tgtExRate + " " + receivingCountry + "/" + sendingCountry);
-					$('#sendingCountryUnit').html(" " + sendingCountry);
+					getCalTgt();
 				}
 				
-			}
+			})
+		}
+		
+		function getCalTgt(){
+			sendingCountry = $('#sendingCountry option:selected').val();
+			receivingCountry = $('#receivingCountry option:selected').val();
 			
-			function getRemittanceResult() {
-				var insertAmount = parseFloat($('#remittanceAmount').val());
-				var remittanceAmount;
+			if(sendingCountry == "USD") {
 				
-				if(insertAmount == 0 || insertAmount > 10000 || insertAmount.toString() == "NaN"){
-					alert("송금액이 바르지 않습니다.");
+				for(var idx in exchangeRateArr) {
 					
-					return;
+					if(exchangeRateArr[idx].country == sendingCountry + receivingCountry) {
+						tgtExRate = numberWithCommaPoint(Math.round(exchangeRateArr[idx].rate *100)/100);
+						
+						$('#tgtRate').html(tgtExRate + " " + receivingCountry + "/" + sendingCountry);
+						$('#sendingCountryUnit').html(" " + sendingCountry);
+						
+						break;
+					}
+				}
+			}
+			else {
+				var sendingCountryExRate;
+				var receivingCountryExRate;
+				
+				for(var idx in exchangeRateArr) {
+					
+					if(exchangeRateArr[idx].country == "USD"+sendingCountry) {
+						sendingCountryExRate = exchangeRateArr[idx].rate;
+						
+						break;
+					}
 				}
 				
-				remittanceAmount = numberWithCommaPoint(insertAmount * removeComma(tgtExRate));
+				for(var idx in exchangeRateArr) {
+					
+					if(exchangeRateArr[idx].country == "USD"+receivingCountry) {
+						receivingCountryExRate = exchangeRateArr[idx].rate;
+						
+						break;
+					}
+				}
 				
-				$('#submitResult').html("수취금액은 " + remittanceAmount + " " + $('#receivingCountry option:selected').val() + " 입니다.");
+				tgtExRate = numberWithCommaPoint(Math.round(receivingCountryExRate/sendingCountryExRate *100)/100);
+				
+				$('#tgtRate').html(tgtExRate + " " + receivingCountry + "/" + sendingCountry);
+				$('#sendingCountryUnit').html(" " + sendingCountry);
 			}
 			
-			// 콤마, 포인트 2자리 적용.
-			function numberWithCommaPoint(float) {
-				var str = float.toString();
+		}
+		
+		function getRemittanceResult() {
+			var insertAmount = parseFloat($('#remittanceAmount').val());
+			var remittanceAmount;
+			
+			if(insertAmount == 0 || insertAmount > 10000 || insertAmount.toString() == "NaN"){
+				alert("송금액이 바르지 않습니다.");
 				
-				str = parseFloat(str).toFixed(2);
-				str = numberWithComma(str);
-				str = numberWithPoint(str);
-				
-				return str;
+				return;
 			}
 			
-			//천 단위 콤마
-			function numberWithComma(float) {
-			    var str = float.toString().split(".");
+			remittanceAmount = numberWithCommaPoint(insertAmount * removeComma(tgtExRate));
+			
+			$('#submitResult').html("수취금액은 " + remittanceAmount + " " + $('#receivingCountry option:selected').val() + " 입니다.");
+		}
+		
+		// 콤마, 포인트 2자리 적용.
+		function numberWithCommaPoint(float) {
+			var str = float.toString();
+			
+			str = parseFloat(str).toFixed(2);
+			str = numberWithComma(str);
+			str = numberWithPoint(str);
+			
+			return str;
+		}
+		
+		//천 단위 콤마
+		function numberWithComma(float) {
+		    var str = float.toString().split(".");
 
-			    str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		    str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-			    return str.join(".");
-			}
+		    return str.join(".");
+		}
+		
+		//끝 2자리 0
+		function numberWithPoint(str) {
 			
-			//끝 2자리 0
-			function numberWithPoint(str) {
+			if(str.includes(".") == false) {
+				str += ".00";
+			}
+			else {
 				
-				if(str.includes(".") == false) {
-					str += ".00";
-				}
-				else {
+				if(str.split(".")[1].length < 2) {
+					str += "0";
 					
 					if(str.split(".")[1].length < 2) {
 						str += "0";
-						
-						if(str.split(".")[1].length < 2) {
-							str += "0";
-						}
 					}
 				}
-				
-				return str;
 			}
 			
-			//콤마 제거
-			function removeComma(str) {
-				var f = parseFloat(str.replace(/,/g,""));
+			return str;
+		}
+		
+		//콤마 제거
+		function removeComma(str) {
+			var f = parseFloat(str.replace(/,/g,""));
 
-				return f;
-			}
+			return f;
+		}
 
 		</script>
 	</body>
