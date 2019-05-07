@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,14 +20,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 @Controller
-public class hello {
+public class homeController {
 	private final String CURRENCY_URL = "http://www.apilayer.net/api/live?access_key=";
 	private final String CURRENCY_KEY = "d584a71201ff8a983b3edea24f5e803c";
 	
-	
-	@RequestMapping("/exchangeRate")
-	public String Helloa() {
-		return "hello";
+	@GetMapping("/")
+	public String home() {
+
+		return "home";
 	}
 	
 	@RequestMapping("ajax/getExchangeRateArr.do")
