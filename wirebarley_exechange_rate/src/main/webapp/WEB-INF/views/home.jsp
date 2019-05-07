@@ -31,7 +31,7 @@
 			</tr>
 			<tr>
 				<td>
-					<span>환율:</span><span id="tgtRate"></span>
+					<span>환율: </span><span id="tgtRate"></span>
 				</td>
 			</tr>
 			<tr>
